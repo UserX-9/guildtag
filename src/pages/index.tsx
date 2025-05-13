@@ -158,7 +158,7 @@ export default function Home() {
               placeholder="Enter a Discord server code"
             />
             <button type="submit" disabled={loading}>
-              {loading ? "Loading..." : "Verify"}
+              {loading ? "Loading..." : "Add"}
             </button>
           </form>
 
