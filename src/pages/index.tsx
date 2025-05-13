@@ -66,6 +66,17 @@ export default function Home() {
           {serverData && (
             <div>
               <h2>Informations sur le serveur</h2>
+
+              {profileData?.badge_hash && serverData?.id && (
+                <img
+                  src={`https://cdn.discordapp.com/clan-badges/${serverData.id}/${profileData.badge_hash}.png?size=64`}
+                  alt="Badge du serveur"
+                  width={64}
+                  height={64}
+                  style={{ marginTop: "10px" }}
+                />
+              )}
+
               <p><strong>Nom du serveur:</strong> {serverData.name}</p>
               <p><strong>ID du serveur:</strong> {serverData.id}</p>
               <p><strong>Nombre de membres:</strong> {profileData?.member_count || "N/A"}</p>
