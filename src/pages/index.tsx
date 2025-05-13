@@ -140,8 +140,11 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <meta property="og:title" content="Guildtag" />
-        <meta property="og:image" content="/favicon.ico" />
+        <meta property="og:image" content="https://bnhzdyuoynsyxjdvvnmt.supabase.co/storage/v1/object/public/assets//favicon.ico" />
         <meta name="og:description" content="Our platform allows you to search, check and explore Discord servers with an official’ tag. Easily add a server with its’invitation code, check its information, and join a community with one click." />
+      
+        <link rel="icon" href="https://bnhzdyuoynsyxjdvvnmt.supabase.co/storage/v1/object/public/assets/favicon.ico" />
+        <link rel="apple-touch-icon" href="https://bnhzdyuoynsyxjdvvnmt.supabase.co/storage/v1/object/public/assets/favicon.ico" />
       </Head>
       <div className={styles.page}>
         <main className={styles.main}>
