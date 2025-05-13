@@ -52,6 +52,10 @@ h2 {
   font-weight: 700;
 }
 
+h1, p, strong,a {
+  color: white;
+}
+
 .info {
   color: var(--purplecolor);
 }
