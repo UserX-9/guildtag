@@ -38,6 +38,21 @@ a {
   text-decoration: none;
 }
 
+li {
+  margin-bottom: 15px;
+    padding: 10px;
+    border-bottom: 1px solid #1F1B26;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+li img {
+  width: 40px;
+  height: 40px;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

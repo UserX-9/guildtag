@@ -148,18 +148,24 @@ export default function Home() {
               <ul style={{ listStyle: "none", padding: 0 }}>
                 {existingServers.map((server) => (
                   <li key={server.id} style={{ marginBottom: "15px", padding: "10px", border: "1px solid #ccc", borderRadius: "6px" }}>
-                    <p><strong>Nom:</strong> {server.name}</p>
-                    <p><strong>ID:</strong> {server.id}</p>
-                    <p><strong>Tag:</strong> {server.tag}</p>
-                    <p><strong>Vanity URL:</strong> {server.vanity_url || "Aucun"}</p>
-                    {server.badge_hash && (
-                      <img
-                        src={`https://cdn.discordapp.com/clan-badges/${server.id}/${server.badge_hash}.png?size=64`}
-                        alt="Badge"
-                        width={64}
-                        height={64}
-                      />
-                    )}
+                    <div className="container-guild">
+                      {server.badge_hash && (
+                        <img
+                          src={`https://cdn.discordapp.com/clan-badges/${server.id}/${server.badge_hash}.png?size=64`}
+                          alt="Badge"
+                          width={64}
+                          height={64}
+                        />
+                      )}
+                      <div>
+                        <p><strong>Nom:</strong> {server.name}</p>
+                        <p><strong>Tag:</strong> {server.tag}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <p><strong>ID:</strong> {server.id}</p>
+                      <p><strong>Vanity URL:</strong> {server.vanity_url || "Aucun"}</p>
+                    </div>
                   </li>
                 ))}
               </ul>
