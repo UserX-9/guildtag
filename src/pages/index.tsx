@@ -2,6 +2,7 @@ import { useState } from "react";
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
 import { supabase } from "@/lib/supabase";
+import { useEffect } from "react";
 
 export default function Home() {
   const [serverCode, setServerCode] = useState("");
@@ -10,6 +11,24 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
+  const [existingServers, setExistingServers] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchExistingServers = async () => {
+      const { data, error } = await supabase
+        .from("discord_tags")
+        .select("*")
+        .not("tag", "is", null); // s’assure qu’il y a un tag
+
+      if (error) {
+        console.error("Erreur lors du chargement des serveurs :", error);
+      } else {
+        setExistingServers(data);
+      }
+    };
+
+    fetchExistingServers();
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setServerCode(e.target.value);
@@ -76,13 +95,13 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Vérification</title>
+        <title>Guildtag</title>
         <meta name="description" content="Vérifiez les serveurs Discord" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <div className={styles.page}>
         <main className={styles.main}>
-          <h1>Vérification de Serveur Discord</h1>
+          <h1>Servers tags</h1>
           
           <form onSubmit={handleSubmit}>
             <input
@@ -120,6 +139,32 @@ export default function Home() {
               <p><strong>Tag:</strong> {profileData?.tag || "Aucun"}</p>
             </div>
           )}
+
+          <section style={{ marginTop: "40px" }}>
+            <h2>Serveurs déjà enregistrés avec un tag</h2>
+            {existingServers.length === 0 ? (
+              <p>Aucun serveur enregistré.</p>
+            ) : (
+              <ul style={{ listStyle: "none", padding: 0 }}>
+                {existingServers.map((server) => (
+                  <li key={server.id} style={{ marginBottom: "15px", padding: "10px", border: "1px solid #ccc", borderRadius: "6px" }}>
+                    <p><strong>Nom:</strong> {server.name}</p>
+                    <p><strong>ID:</strong> {server.id}</p>
+                    <p><strong>Tag:</strong> {server.tag}</p>
+                    <p><strong>Vanity URL:</strong> {server.vanity_url || "Aucun"}</p>
+                    {server.badge_hash && (
+                      <img
+                        src={`https://cdn.discordapp.com/clan-badges/${server.id}/${server.badge_hash}.png?size=64`}
+                        alt="Badge"
+                        width={64}
+                        height={64}
+                      />
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
         </main>
       </div>
     </>
