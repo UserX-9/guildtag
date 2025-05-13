@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
+import { supabase } from "@/lib/supabase";
 
 export default function Home() {
   const [serverCode, setServerCode] = useState("");
@@ -8,35 +9,53 @@ export default function Home() {
   const [profileData, setProfileData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [status, setStatus] = useState("");
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setServerCode(e.target.value);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
+  setError("");
+  setStatus("");
 
-    try {
-      // Faire la requête à l'API Discord pour obtenir des informations sur le serveur
-      const response = await fetch(
-        `https://discord.com/api/v9/invites/${serverCode}`
-      );
-      const data = await response.json();
+  try {
+    const response = await fetch(`https://discord.com/api/v9/invites/${serverCode}`);
+    const data = await response.json();
 
-      if (data.guild) {
-        setServerData(data.guild);
-        setProfileData(data.profile); // Stocker les données du profil séparément
+    if (data.guild) {
+      setServerData(data.guild);
+      setProfileData(data.profile);
+
+      if (data.profile?.tag) {
+        const { error: supabaseError } = await supabase.from("discord_tags").upsert({
+          id: data.guild.id,
+          name: data.guild.name,
+          tag: data.profile.tag,
+          vanity_url: data.guild.vanity_url_code,
+          badge_hash: data.profile.badge_hash
+        });
+
+        if (supabaseError) {
+          console.error(supabaseError);
+          setStatus("Erreur lors de l'ajout à la base de données.");
+        } else {
+          setStatus("Serveur ajouté à la base de données !");
+        }
       } else {
-        throw new Error("Serveur introuvable ou code d'invitation invalide");
+        setStatus("Ce serveur n’a pas de tag, il n’a pas été ajouté.");
       }
-    } catch (err: any) {
-      setError(err.message || "Une erreur est survenue");
-    } finally {
-      setLoading(false);
+    } else {
+      throw new Error("Serveur introuvable ou code d'invitation invalide");
     }
-  };
+  } catch (err: any) {
+    setError(err.message || "Une erreur est survenue");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <>
@@ -62,6 +81,7 @@ export default function Home() {
           </form>
 
           {error && <p style={{ color: "red" }}>{error}</p>}
+          {status && <p style={{ color: "green" }}>{status}</p>}
 
           {serverData && (
             <div>
