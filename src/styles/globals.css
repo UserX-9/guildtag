@@ -52,7 +52,7 @@ h2 {
   font-weight: 700;
 }
 
-h1, p, strong,a {
+h1, p, strong, a, .filter-active, .filter {
   color: white;
 }
 
