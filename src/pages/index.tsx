@@ -101,7 +101,7 @@ export default function Home() {
             console.error(selectError);
             setStatus("Error checking in the database!");
           } else if (existing) {
-            setStatus("This tag is already in the database!");
+            setStatus("This tag is already in the database !");
           } else {
             const { error: insertError } = await supabase.from("discord_tags").insert({
               id: data.guild.id,
