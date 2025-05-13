@@ -15,47 +15,63 @@ export default function Home() {
     setServerCode(e.target.value);
   };
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setLoading(true);
-  setError("");
-  setStatus("");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setStatus("");
 
-  try {
-    const response = await fetch(`https://discord.com/api/v9/invites/${serverCode}`);
-    const data = await response.json();
+    try {
+      const response = await fetch(`https://discord.com/api/v9/invites/${serverCode}`);
+      const data = await response.json();
 
-    if (data.guild) {
-      setServerData(data.guild);
-      setProfileData(data.profile);
+      if (data.guild) {
+        setServerData(data.guild);
+        setProfileData(data.profile);
 
-      if (data.profile?.tag) {
-        const { error: supabaseError } = await supabase.from("discord_tags").upsert({
-          id: data.guild.id,
-          name: data.guild.name,
-          tag: data.profile.tag,
-          vanity_url: data.guild.vanity_url_code,
-          badge_hash: data.profile.badge_hash
-        });
+        const tag = data.profile?.tag;
 
-        if (supabaseError) {
-          console.error(supabaseError);
-          setStatus("Erreur lors de l'ajout à la base de données.");
+        if (tag) {
+          const { data: existing, error: selectError } = await supabase
+            .from("discord_tags")
+            .select("id")
+            .eq("tag", tag)
+            .maybeSingle();
+
+          if (selectError) {
+            console.error(selectError);
+            setStatus("Erreur lors de la vérification dans la base de données.");
+          } else if (existing) {
+            setStatus("Ce tag est déjà dans la base de données.");
+          } else {
+            // Sinon on insère
+            const { error: insertError } = await supabase.from("discord_tags").insert({
+              id: data.guild.id,
+              name: data.guild.name,
+              tag: tag,
+              vanity_url: data.guild.vanity_url_code,
+              badge_hash: data.profile.badge_hash,
+            });
+
+            if (insertError) {
+              console.error(insertError);
+              setStatus("Erreur lors de l'ajout à la base de données.");
+            } else {
+              setStatus("Serveur ajouté à la base de données !");
+            }
+          }
         } else {
-          setStatus("Serveur ajouté à la base de données !");
+          setStatus("Ce serveur n’a pas de tag, il n’a pas été ajouté.");
         }
       } else {
-        setStatus("Ce serveur n’a pas de tag, il n’a pas été ajouté.");
+        throw new Error("Serveur introuvable ou code d'invitation invalide");
       }
-    } else {
-      throw new Error("Serveur introuvable ou code d'invitation invalide");
+    } catch (err: any) {
+      setError(err.message || "Une erreur est survenue");
+    } finally {
+      setLoading(false);
     }
-  } catch (err: any) {
-    setError(err.message || "Une erreur est survenue");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <>
