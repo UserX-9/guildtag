@@ -68,7 +68,7 @@ export default function Home() {
               <p><strong>ID du serveur:</strong> {serverData.id}</p>
               <p><strong>Nombre de membres:</strong> {serverData.member_count}</p>
               <p><strong>Code Vanity URL:</strong> {serverData.vanity_url_code || "Aucun"}</p>
-              <p><strong>Tag:</strong> {serverData.tag || "Aucun"}</p>
+              <p><strong>Tag:</strong> {serverData.profile?.tag || "Aucun"}</p>
             </div>
           )}
         </main>
