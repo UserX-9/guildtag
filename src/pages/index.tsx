@@ -39,7 +39,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Vérification de Serveur Discord</title>
+        <title>Vérification</title>
         <meta name="description" content="Vérifiez les serveurs Discord" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
