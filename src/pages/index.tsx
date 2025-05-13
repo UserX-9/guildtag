@@ -5,6 +5,7 @@ import styles from "@/styles/Home.module.css";
 export default function Home() {
   const [serverCode, setServerCode] = useState("");
   const [serverData, setServerData] = useState<any>(null);
+  const [profileData, setProfileData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -26,6 +27,7 @@ export default function Home() {
 
       if (data.guild) {
         setServerData(data.guild);
+        setProfileData(data.profile); // Stocker les données du profil séparément
       } else {
         throw new Error("Serveur introuvable ou code d'invitation invalide");
       }
@@ -66,9 +68,9 @@ export default function Home() {
               <h2>Informations sur le serveur</h2>
               <p><strong>Nom du serveur:</strong> {serverData.name}</p>
               <p><strong>ID du serveur:</strong> {serverData.id}</p>
-              <p><strong>Nombre de membres:</strong> {serverData.member_count}</p>
+              <p><strong>Nombre de membres:</strong> {profileData?.member_count || "N/A"}</p>
               <p><strong>Code Vanity URL:</strong> {serverData.vanity_url_code || "Aucun"}</p>
-              <p><strong>Tag:</strong> {serverData.profile?.tag || "Aucun"}</p>
+              <p><strong>Tag:</strong> {profileData?.tag || "Aucun"}</p>
             </div>
           )}
         </main>
