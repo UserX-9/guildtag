@@ -94,7 +94,7 @@ export default function Home() {
           const { data: existing, error: selectError } = await supabase
             .from("discord_tags")
             .select("id")
-            .eq("tag", tag)
+            .eq("id", data.guild.id)
             .maybeSingle();
 
           if (selectError) {
